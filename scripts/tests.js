@@ -1,21 +1,27 @@
-QUnit.test("DataStore Tests", function(assert) {
+QUnit.test('DataStore Tests', function(assert) {
+    var App = window.App;
     var ds = new App.DataStore();
     ds.add('m@bond.com', 'tea');
     ds.add('james@bond.com', 'eshpressho');
     assert.deepEqual(ds.getAll(), {
-        "james@bond.com": "eshpressho",
-        "m@bond.com": "tea"
+        'james@bond.com': 'eshpressho',
+        'm@bond.com': 'tea'
     });
     ds.remove('james@bond.com');
 
     assert.deepEqual(ds.getAll(), {
-        "m@bond.com": "tea"
+        'm@bond.com': 'tea'
     });
-    assert.equal(ds.get('m@bond.com'), "tea");
+    assert.equal(ds.get('m@bond.com'), 'tea');
     assert.equal(ds.get('james@bond.com'), undefined);
 });
 
-QUnit.test("Truck Tests", function(assert) {
+QUnit.test('Truck Tests', function(assert) {
+    var App = window.App;
+    var Truck = App.Truck;
+    var DataStore = App.DataStore;
+    var myTruck = new Truck('ncc-1701', new DataStore());
+    window.myTruck = myTruck;
     myTruck.createOrder({
         emailAddress: 'me@goldfinger.com',
         coffee: 'double mocha'

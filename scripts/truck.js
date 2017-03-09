@@ -8,26 +8,27 @@
     }
 
     Truck.prototype.createOrder = function(order) {
-        console.log('Adding order for ' + order.emailAddress);
         this.db.add(order.emailAddress, order);
     };
 
     Truck.prototype.deliverOrder = function(customerId) {
-        console.log('Delivering order for ' + customerId);
         this.db.remove(customerId);
     };
 
+    // Created this function to return keys from current orders
+    Truck.prototype.getOrders = function() {
+        return Object.keys(this.db.getAll());
+    };
+
+    // This does not return any values and therefor not possible to check if
+    // it is printing the correct output.
     Truck.prototype.printOrders = function() {
-        var customerIdArray = getOrders();
+        var customerIdArray = this.getOrders();
 
         console.log('Truck #' + this.truckId + ' has pending orders:');
         customerIdArray.forEach(function(id) {
             console.log(this.db.get(id));
-        }.bind(this));
-    };
-
-    Truck.prototype.getOrders = function() {
-        return Object.keys(this.db.getAll());
+        });
     };
 
     App.Truck = Truck;
