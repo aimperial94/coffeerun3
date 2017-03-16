@@ -9,6 +9,7 @@
 
     Truck.prototype.createOrder = function(order) {
         this.db.add(order.emailAddress, order);
+        console.log('Adding order for ' + order.emailAddress);
     };
 
     Truck.prototype.deliverOrder = function(customerId) {
@@ -27,7 +28,7 @@
 
         console.log('Truck #' + this.truckId + ' has pending orders:');
         customerIdArray.forEach(function(id) {
-            console.log(this.db.get(id));
+            console.log(id);
         });
     };
 
