@@ -19,7 +19,9 @@
         if (order['size'] == 'Titanic' && order['strength'] == 100 && order['flavor'] != '') {
             $('#achievementModal').modal('show');
             App.achievers.push(order['emailAddress']);
+            return true;
         }
+        return false;
     }
 
     function addSpecials() {
@@ -68,9 +70,7 @@
                 console.log(item.name + ' is ' + item.value);
             });
             checkAchievement(data);
-            console.log(data);
             fn(data);
-            this.reset();
             this.reset();
             this.elements[0].focus();
         });
@@ -80,7 +80,6 @@
         var email = document.getElementById('emailInput');
         email.addEventListener('blur', function() {
             checkAchievers(email.value);
-            console.log(email.value);
         });
     };
 
