@@ -4,7 +4,7 @@
 
     var Validation = {
         isCompanyEmail: function(email) {
-            return /.+@here\.com$/.test(email);
+            return /.+@bignerdranch\.com$/.test(email);
         },
 
         isDecaf: function(order, strength) {
