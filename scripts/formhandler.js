@@ -2,7 +2,6 @@
     'use strict';
     var App = window.App || {};
     var $ = window.jQuery;
-    App.achievers = [];
 
     function FormHandler(selector) {
         if (!selector) {
@@ -12,50 +11,6 @@
         this.$formElement = $(selector);
         if (this.$formElement.length === 0) {
             throw new Error('Could not find element with selector: ' + selector);
-        }
-    }
-
-    function checkAchievement(order) {
-        if (order['size'] == 'Titanic' && order['strength'] == 100 && order['flavor'] != '') {
-            $('#achievementModal').modal('show');
-            App.achievers.push(order['emailAddress']);
-            return true;
-        }
-        return false;
-    }
-
-    function addSpecials() {
-        var container = document.getElementById('container');
-        var list = document.createElement('select');
-        var label = document.createElement('label');
-        label.for = 'superShot';
-        label.textContent = 'Super Shot';
-        container.appendChild(label);
-        list.id = 'superShot';
-        list.name = 'superShot';
-        list.class = 'form-control';
-        container.appendChild(list);
-        var special = document.createElement('option');
-        special.text = '';
-        special.value = 'None';
-        list.appendChild(special);
-        special = document.createElement('option');
-        special.text = 'Invisibility';
-        special.value = 'Invisibility';
-        list.appendChild(special);
-        special = document.createElement('option');
-        special.text = 'Super Speed';
-        special.value = 'Super Speed';
-        list.appendChild(special);
-        special = document.createElement('option');
-        special.text = 'Homework Completion';
-        special.value = 'Homework Completion';
-        list.appendChild(special);
-    }
-
-    function checkAchievers(email) {
-        if (App.achievers.indexOf(email) != -1) {
-            addSpecials();
         }
     }
 
@@ -69,55 +24,57 @@
                 data[item.name] = item.value;
                 console.log(item.name + ' is ' + item.value);
             });
-            checkAchievement(data);
             fn(data);
             this.reset();
             this.elements[0].focus();
         });
     };
 
-    FormHandler.prototype.addEmailHandler = function() {
-        var email = document.getElementById('emailInput');
-        email.addEventListener('blur', function() {
-            checkAchievers(email.value);
-        });
-    };
-
-    FormHandler.prototype.addResetHandler = function() {
-        this.$formElement.on('reset', function() {
-            var strengthLabel = document.getElementById('labelStrength');
-            strengthLabel.textContent = 'Caffeine Rating: 30';
-            strengthLabel.style.color = 'Green';
-        });
-    };
-
-    FormHandler.prototype.addSliderHandler = function() {
-        console.log('Setting up slider handler');
-        var strengthLabel = document.getElementById('labelStrength');
-        var strengthValue = document.getElementById('strengthLevel');
-
-        //this.$formElement.on('range', function(event) {
-        strengthValue.addEventListener('input', function() {
-            event.preventDefault();
-            if (strengthValue.value < 33) {
-                strengthLabel.textContent = 'Caffeine Rating: ' + strengthValue.value;
-                strengthLabel.style.color = 'Green';
-            } else if (strengthValue.value < 66) {
-                strengthLabel.textContent = 'Caffeine Rating: ' + strengthValue.value;
-                strengthLabel.style.color = 'Yellow';
+    FormHandler.prototype.addInputHandler = function(fn) {
+        console.log('Setting input handler for form');
+        this.$formElement.on('input', '[name="emailAddress"]', function(event) {
+            var emailAddress = event.target.value;
+            var message = '';
+            if (fn(emailAddress)) {
+                event.target.setCustomValidity('');
             } else {
-                strengthLabel.textContent = 'Caffeine Rating: ' + strengthValue.value;
-                strengthLabel.style.color = 'Red';
+                message = emailAddress + ' is not an authorized email address!';
+                event.target.setCustomValidity(message);
             }
-
-
         });
     };
 
-    FormHandler.prototype.init = function() {
-        var strengthLabel = document.getElementById('labelStrength');
-        strengthLabel.textContent = 'Caffeine Rating: 30';
-        strengthLabel.style.color = 'Green';
+
+    FormHandler.prototype.addDecafHandler = function(fn) {
+        console.log('Setting decaf handler for validation');
+        this.$formElement.on('change', '[name="strength"]', function(event) {
+            var coffee = document.getElementById('coffeeOrder');
+            var strength = event.target.value;
+            console.log(strength);
+            var message = 'Not valid decaf order, strength must be 20 or less.';
+            if (fn(coffee.value, strength)) {
+                event.target.setCustomValidity('');
+                coffee.setCustomValidity('');
+            } else {
+                event.target.setCustomValidity(message);
+                coffee.setCustomValidity('');
+            }
+        });
+
+        this.$formElement.on('input', '[name="coffee"]', function(event) {
+            var coffee = event.target.value;
+            var strength = document.getElementById('strengthLevel');
+            var message = 'Not valid decaf order, strength must be 20 or less.';
+            if (fn(coffee, strength.value)) {
+                event.target.setCustomValidity('');
+                strength.setCustomValidity('');
+            } else {
+                event.target.setCustomValidity(message);
+                strength.setCustomValidity('');
+            }
+        });
+
+
     };
 
     App.FormHandler = FormHandler;
